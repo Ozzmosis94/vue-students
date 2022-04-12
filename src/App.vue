@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="yellow">
+    <v-app-bar app color="white">
       <v-toolbar-title>Vue & Vuetify & Router & Vuex</v-toolbar-title>
       <v-spacer></v-spacer>
 
@@ -28,9 +28,8 @@ export default {
       sidebar: false,
       appTitle: "Awesome App",
       menuItems: [
-        { title: "Home", pathName: "Home", icon: "home" },
-        { title: "Студенты", pathName: "StudentsPage", icon: "face" },
-        { title: "Секции", pathName: "SectionsPage", icon: "lock_open" },
+        { title: "Студенты", pathName: "StudentsPage"},
+        { title: "Секции", pathName: "SectionsPage" },
       ],
     };
   },

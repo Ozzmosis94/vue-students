@@ -1,6 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
+import router from "../router";
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -60,21 +62,21 @@ export default new Vuex.Store({
       state.students.push(payload);
     },
     REMOVE_STUDENT(state, payload) {
-      state.students = state.students.filter(student => student.id !== payload.id);
+      state.students = state.students.filter(
+        (student) => student.id !== payload.id
+      );
     },
     EDIT_STUDENT(state, payload) {
-      let findStudent =  state.students.find(student => student.id === payload.id);
-
-      console.log(findStudent, payload)
+      let findStudent = state.students.find(
+        (student) => student.id === payload.id
+      );
 
       if (findStudent) {
-        findStudent = { ...findStudent, payload }
+        findStudent = Object.assign(findStudent, payload);
       }
-
-      console.log(findStudent)
     },
-    SET_SECTIONS(state, payload) {
-      state.sections = payload;
+    UPDATE_SECTIONS(state, payload) {
+      state.sections = [...state.sections, payload];
     },
   },
   actions: {
@@ -91,7 +93,14 @@ export default new Vuex.Store({
       commit("EDIT_STUDENT", payload);
     },
     updateSections({ commit }, payload) {
-      commit("SET_SECTIONS", payload);
+      commit("UPDATE_SECTIONS", payload);
+    },
+  },
+  getters: {
+    getStudent(state) {
+      return state.students.find(
+        (student) => student.id === +router.currentRoute.params.id
+      );
     },
   },
   modules: {},

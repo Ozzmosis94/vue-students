@@ -1,24 +1,36 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="600px">
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn color="primary" dark v-bind="attrs" v-on="on">
-        asd{{ buttonText }}
+  <v-dialog v-model="dialog" max-width="700px">
+    <template v-if="buttonTitle" v-slot:activator="{ on, attrs }">
+      <v-btn
+        color="primary"
+        dark
+        class="mb-2"
+        v-bind="attrs"
+        v-on="on"
+        @click="$emit('click')"
+      >
+        {{ buttonTitle }}
       </v-btn>
     </template>
     <v-card>
       <v-card-title>
-        <span class="text-h5">User Profile</span>
+        <span class="text-h5">{{ formTitle }}</span>
       </v-card-title>
+
       <v-card-text>
-        <slot />
-        <small>*indicates required field</small>
+        <v-container>
+          <v-row>
+            <slot />
+          </v-row>
+        </v-container>
       </v-card-text>
+
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="dialog = false">
-          Close
+        <v-btn color="blue darken-1" text @click="close"> Отмена </v-btn>
+        <v-btn :disabled="disabled" color="blue darken-1" text @click="save">
+          {{ successText }}
         </v-btn>
-        <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -32,15 +44,30 @@ export default {
     };
   },
   props: {
-    buttonText: {
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    buttonTitle: {
       type: String,
-      required: true,
+      default: "",
+    },
+    formTitle: {
+      type: String,
+      default: "",
+    },
+    successText: {
+      type: String,
+      default: "ОК",
     },
   },
   methods: {
     save() {
+      this.$nextTick(() => this.$emit("success"));
+    },
+    close() {
       this.dialog = false;
-      this.$nextTick(() => this.$emit("save"));
+      this.$nextTick(() => this.$emit("close"));
     },
   },
 };
