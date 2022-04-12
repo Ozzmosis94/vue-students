@@ -1,56 +1,80 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+    <v-navigation-drawer app clipped permanent expand-on-hover>
+      <v-list>
+        <v-list-item class="px-2">
+          <v-list-item-avatar>
+            <v-img
+              src="https://randomuser.me/api/portraits/women/85.jpg"
+            ></v-img>
+          </v-list-item-avatar>
+        </v-list-item>
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
+        <v-list-item link>
+          <v-list-item-content>
+            <v-list-item-title class="title">Sandra Adams</v-list-item-title>
+            <v-list-item-subtitle>sandra_a88@gmail.com</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
 
-      <v-spacer></v-spacer>
+      <v-divider></v-divider>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
+      <v-list nav dense>
+        <v-list-item
+          v-for="(item, i) in menuItems"
+          :key="i"
+          :to="{ name: item.pathName }"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
     <v-main>
-      <the-students />
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import TheStudents from "./components/TheStudents.vue";
-
 export default {
-  name: "App",
-
-  components: {
-    TheStudents,
+  data() {
+    return {
+      sidebar: false,
+      appTitle: "Awesome App",
+      menuItems: [
+        { title: "Home", pathName: "Home", icon: "home" },
+        { title: "Студенты", pathName: "StudentsPage", icon: "face" },
+        { title: "Секции", pathName: "SectionsPage", icon: "lock_open" },
+      ],
+    };
   },
-
-  data: () => ({
-    //
-  }),
 };
 </script>
+
+<style lang="scss">
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+#nav {
+  padding: 30px;
+
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+
+    &.router-link-exact-active {
+      color: #42b983;
+    }
+  }
+}
+</style>

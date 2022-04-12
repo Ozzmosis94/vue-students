@@ -1,19 +1,19 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="students"
+    :items="sections"
     sort-by="calories"
     class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Студенты</v-toolbar-title>
+        <v-toolbar-title>Секции</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-              Добавить студента
+              Добавить секцию
             </v-btn>
           </template>
           <v-card>
@@ -28,77 +28,9 @@
                     <v-text-field
                       v-model="add.firstName"
                       :rules="rules.firstName"
-                      label="Введите имя студента"
+                      label="Введите название секции"
                       required
                     ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="add.lastName"
-                      :rules="rules.lastName"
-                      label="Введите фамилию студента"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="add.middleName"
-                      label="Введите отчество студента"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <v-select
-                      v-model="add.sections"
-                      :items="sections"
-                      item-text="name"
-                      label="Секции"
-                      multiple
-                      return-object
-                      hint="Выберите секции"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-menu
-                      ref="menu"
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="add.birthdayDate"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="add.birthdayDate"
-                          :rules="rules.birthdayDate"
-                          label="Дата родждения"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          required
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="add.birthdayDate"
-                        locale="ru-RU"
-                        first-day-of-week="1"
-                        no-title
-                        scrollable
-                      >
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Отмена
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(add.birthdayDate)"
-                        >
-                          ОК
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
                   </v-col>
                 </v-row>
               </v-container>
@@ -116,7 +48,7 @@
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="text-h5"
-              >Вы действительно хотите удалить студента?</v-card-title
+              >Вы действительно хотите удалить секцию?</v-card-title
             >
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -169,34 +101,22 @@ export default {
         footerProps: { "items-per-page-text": "Студентов на странице" },
       },
       add: {
-        firstName: "",
-        lastName: "",
-        middleName: "",
-        birthdayDate: null,
-        sections: [],
+        name: "",
       },
       rules: {
-        firstName: [(v) => !!v || "Заполните имя"],
-        lastName: [(v) => !!v || "Заполните фамилию"],
-        birthdayDate: [(v) => !!v || "Заполните дату рождения"],
+        name: [(v) => !!v || "Заполните название секции"],
       },
       headers: [
         {
-          text: "ФИО",
+          text: "Название секции",
           align: "start",
           sortable: false,
-          value: "fullName",
+          value: "name",
         },
-        { text: "Дата рождения", value: "birthdayDate" },
-        { text: "Секции", value: "sections" },
-        { text: "Действия", value: "actions" },
       ],
     };
   },
   computed: {
-    students() {
-      return this.$store.state.students;
-    },
     sections() {
       return this.$store.state.sections;
     },
@@ -261,7 +181,6 @@ export default {
 
     deleteItemConfirm() {
       this.students.splice(this.editedIndex, 1);
-      this.$store.dispatch("updateStudents", this.students);
       this.closeDelete();
     },
 
@@ -283,19 +202,24 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.students[this.editedIndex], {
-          ...this.add,
-          id: Date.now(),
-        });
-        this.$store.dispatch("updateStudents", this.students);
+        Object.assign(this.students[this.editedIndex], this.add);
       } else {
-        this.students.push({
-          ...this.add,
-          id: Date.now(),
-        });
-        this.$store.dispatch("updateStudents", this.students);
+        this.students.push(this.add);
       }
       this.close();
+    },
+    onTopButtonClick() {
+      console.log("click");
+    },
+    onSave() {
+      this.students.push({ ...this.add, id: Date.now() });
+      this.add = {
+        firstName: "",
+        lastName: "",
+        middleName: "",
+        birthdayDate: null,
+        sections: [],
+      };
     },
   },
 };
