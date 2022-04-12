@@ -56,13 +56,39 @@ export default new Vuex.Store({
     SET_STUDENTS(state, payload) {
       state.students = payload;
     },
+    ADD_STUDENT(state, payload) {
+      state.students.push(payload);
+    },
+    REMOVE_STUDENT(state, payload) {
+      state.students = state.students.filter(student => student.id !== payload.id);
+    },
+    EDIT_STUDENT(state, payload) {
+      let findStudent =  state.students.find(student => student.id === payload.id);
+
+      console.log(findStudent, payload)
+
+      if (findStudent) {
+        findStudent = { ...findStudent, payload }
+      }
+
+      console.log(findStudent)
+    },
     SET_SECTIONS(state, payload) {
       state.sections = payload;
     },
   },
   actions: {
-    updateStudents({ commit }, payload) {
+    setStudents({ commit }, payload) {
       commit("SET_STUDENTS", payload);
+    },
+    addStudent({ commit }, payload) {
+      commit("ADD_STUDENT", payload);
+    },
+    removeStudent({ commit }, payload) {
+      commit("REMOVE_STUDENT", payload);
+    },
+    editStudent({ commit }, payload) {
+      commit("EDIT_STUDENT", payload);
     },
     updateSections({ commit }, payload) {
       commit("SET_SECTIONS", payload);

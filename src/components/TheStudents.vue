@@ -163,7 +163,7 @@ export default {
       menu: false,
       dialog: false,
       dialogDelete: false,
-      editedIndex: -1,
+      pickedStudent: null,
       options: {
         itemsPerPage: 5,
         footerProps: { "items-per-page-text": "Студентов на странице" },
@@ -247,54 +247,50 @@ export default {
     //   //   this.$set(this.someObject, "b", 2);
     // },
     editItem(item) {
-      this.editedIndex = this.students.indexOf(item);
+      this.pickedStudent = this.students.find(
+        (student) => student.id === item.id
+      );
       this.add = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      console.log(item);
-      this.editedIndex = this.students.indexOf(item);
+      this.pickedStudent = this.students.find(
+        (student) => student.id === item.id
+      );
       this.add = Object.assign({}, item);
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      this.students.splice(this.editedIndex, 1);
-      this.$store.dispatch("updateStudents", this.students);
+      this.$store.dispatch("removeStudent", this.pickedStudent);
       this.closeDelete();
     },
 
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.add = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
+        this.add = Object.assign({}, this.add);
+        this.pickedStudent = null;
       });
     },
 
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
-        this.add = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
+        this.add = Object.assign({}, this.add);
+        this.pickedStudent = null;
       });
     },
 
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.students[this.editedIndex], {
-          ...this.add,
-          id: Date.now(),
-        });
-        this.$store.dispatch("updateStudents", this.students);
-      } else {
-        this.students.push({
-          ...this.add,
-          id: Date.now(),
-        });
-        this.$store.dispatch("updateStudents", this.students);
-      }
+      this.pickedStudent
+        ? this.$store.dispatch("editStudent", this.add)
+        : this.$store.dispatch("addStudent", {
+            ...this.add,
+            id: Date.now(),
+          });
+
       this.close();
     },
   },
