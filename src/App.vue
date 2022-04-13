@@ -1,20 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="white">
-      <v-toolbar-title>Vue & Vuetify & Router & Vuex</v-toolbar-title>
-      <v-spacer></v-spacer>
-
-      <v-btn
-        v-for="item in menuItems"
-        link
-        exact
-        :key="item.title"
-        :to="{ name: item.pathName }"
-        class="ml-4"
-        >{{ item.title }}
-      </v-btn>
-    </v-app-bar>
-
+    <the-header />
     <v-main>
       <router-view />
     </v-main>
@@ -22,17 +8,10 @@
 </template>
 
 <script>
+import TheHeader from "./components/TheHeader.vue";
+
 export default {
-  data() {
-    return {
-      sidebar: false,
-      appTitle: "Awesome App",
-      menuItems: [
-        { title: "Студенты", pathName: "StudentsPage"},
-        { title: "Секции", pathName: "SectionsPage" },
-      ],
-    };
-  },
+  components: { TheHeader },
 };
 </script>
 
